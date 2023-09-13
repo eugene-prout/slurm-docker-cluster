@@ -85,14 +85,12 @@ RUN set -x \
     && chown -R slurm:slurm /var/*/slurm* \
     && /sbin/create-munge-key
 
-COPY slurm.conf /etc/slurm/slurm.conf
-COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
+COPY ./conf/slurm.conf /etc/slurm/slurm.conf
+COPY ./conf/slurmdbd.conf /etc/slurm/slurmdbd.conf
 RUN set -x \
     && chown slurm:slurm /etc/slurm/slurmdbd.conf \
     && chmod 600 /etc/slurm/slurmdbd.conf
+    
+COPY --chmod=0755 ./database-node/start_slurmdbd.sh ./start_slurmdbd.sh
 
-
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-
-CMD ["slurmdbd"]
+CMD ["./start_slurmdbd.sh"]
